@@ -1,0 +1,25 @@
+.env
+
+# Промежуточные файлы и прочее
+other
+service
+folder/
+folder/*
+nginx
+
+# Модель
+best_model.pkl
+
+# Чтобы не пушить бд
+pg_data
+postgres-data
+rabbitmq
+rabbitmq_data
+rabbitmq-data
+
+__pycache__
+.pyc
+
+.vscode
+
+.flake8

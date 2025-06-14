@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    command: uvicorn app.api:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    # volumes:
+    #   - .:/app
+    environment:
+      - PYTHONPATH=/app
+      - DATABASE_URL=postgresql://medical_user:medical_password@db:5432/medical_db
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  web:
+    build: .
+    command: streamlit run app/web.py --server.port 8501 --server.address 0.0.0.0
+    ports:
+      - "8501:8501"
+    # volumes:
+    #   - .:/app
+    environment:
+      - DATABASE_URL=postgresql://medical_user:medical_password@db:5432/medical_db
+      - API_URL=http://api:8000
+    depends_on:
+      - api
+    networks:
+      - app-network
+
+  worker:
+    build: .
+    command: python -m app.worker
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgresql://medical_user:medical_password@db:5432/medical_db
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+    depends_on:
+      - db
+      - rabbitmq
+    networks:
+      - app-network
+    deploy:
+      replicas: 2
+
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: medical_db
+      POSTGRES_USER: medical_user
+      POSTGRES_PASSWORD: medical_password
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medical_user -d medical_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+volumes:
+  pg_data:
+  rabbitmq_data:
+
+networks:
+  app-network:
+    driver: bridge 

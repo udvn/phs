@@ -1,0 +1,86 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Виртуальное окружение
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Данные и модели
+*.csv
+*.xlsx
+*.xls
+*.db
+*.sqlite3
+models/
+data/
+baseline_last/
+*.ipynb
+*.h5
+*.pt
+*.pth
+*.onnx
+*.bin
+*.npy
+*.npz
+
+# ИЗМЕНЕНО/ДОБАВЛЕНО: Разрешаем best_model.pkl
+# *.pkl # Если эта строка присутствует, ее можно удалить или добавить исключение ниже
+!best_model.pkl # Явно включаем best_model.pkl
+
+# Логи
+*.log
+
+# Временные файлы
+.DS_Store
+Thumbs.db
+
+# Данные баз данных
+pg_data/
+rabbitmq_data/
+
+# Дополнительные директории
+folder/
+**/node_modules/
+**/__pycache__/
+**/.pytest_cache/
+**/.coverage
+**/htmlcov/
+**/.mypy_cache/
+**/.ruff_cache/
+
+# Большие файлы
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.tar
+*.gz 

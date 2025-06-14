@@ -1,0 +1,27 @@
+{
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "parameters": [
+    {
+      "name": "deprecated_features",
+      "value": {
+        "permit": {
+          "management_metrics_collection": true,
+          "transient_nonexcl_queues": true
+        }
+      }
+    }
+  ],
+  "queues": [
+    {
+      "name": "predictions",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ]
+} 
